@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard - FUT Minna</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<%- include('../partials/navbar') %>
+
+<div class="layout">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h6>Logged in as</h6>
+            <p>👤 <%= user.full_name %></p>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="/staff/dashboard" class="active">
+                <span class="icon">🏠</span> Dashboard
+            </a></li>
+            <li><a href="/staff/appointments">
+                <span class="icon">📅</span> Appointments
+            </a></li>
+            <li><a href="/staff/bookings">
+                <span class="icon">📋</span> My Bookings
+            </a></li>
+            <li><a href="/staff/announcements">
+                <span class="icon">📢</span> Announcements
+            </a></li>
+            <li><a href="/logout">
+                <span class="icon">🚪</span> Logout
+            </a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1>Welcome, <%= user.full_name %>! 👋</h1>
+            <p>Manage your appointments and bookings from here</p>
+        </div>
+
+        <%- include('../partials/messages') %>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card orange">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-info">
+                    <h3><%= pendingAppointments.length %></h3>
+                    <p>Pending Appointments</p>
+                </div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-icon">✅</div>
+                <div class="stat-info">
+                    <h3><%= approvedAppointments.length %></h3>
+                    <p>Upcoming Appointments</p>
+                </div>
+            </div>
+            <div class="stat-card blue">
+                <div class="stat-icon">📢</div>
+                <div class="stat-info">
+                    <h3><%= announcements.length %></h3>
+                    <p>Announcements</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Appointments -->
+        <div class="card">
+            <div class="card-header">
+                <h2>⏳ Pending Appointment Requests</h2>
+                <a href="/staff/appointments" class="btn btn-primary btn-sm">View All</a>
+            </div>
+            <% if (pendingAppointments.length > 0) { %>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Email</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Purpose</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% pendingAppointments.forEach(apt => { %>
+                        <tr>
+                            <td><%= apt.users.full_name %></td>
+                            <td><%= apt.users.email %></td>
+                            <td><%= new Date(apt.appointment_date).toDateString() %></td>
+                            <td><%= apt.appointment_time %></td>
+                            <td><%= apt.purpose %></td>
+                            <td>
+                                <a href="/staff/appointments/<%= apt.id %>/approve"
+                                   class="btn btn-success btn-sm">✅ Approve</a>
+                                <a href="/staff/appointments/<%= apt.id %>/reject"
+                                   class="btn btn-danger btn-sm">❌ Reject</a>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+            <% } else { %>
+            <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <p>No pending appointment requests.</p>
+            </div>
+            <% } %>
+        </div>
+
+        <!-- Upcoming Approved Appointments -->
+        <div class="card">
+            <div class="card-header">
+                <h2>✅ Upcoming Appointments</h2>
+            </div>
+            <% if (approvedAppointments.length > 0) { %>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Purpose</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% approvedAppointments.forEach(apt => { %>
+                        <tr>
+                            <td><%= apt.users.full_name %></td>
+                            <td><%= new Date(apt.appointment_date).toDateString() %></td>
+                            <td><%= apt.appointment_time %></td>
+                            <td><%= apt.purpose %></td>
+                            <td><span class="badge badge-approved">Approved</span></td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+            <% } else { %>
+            <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <p>No upcoming appointments.</p>
+            </div>
+            <% } %>
+        </div>
+
+        <!-- Announcements -->
+        <div class="card">
+            <div class="card-header">
+                <h2>📢 Latest Announcements</h2>
+                <a href="/staff/announcements" class="btn btn-primary btn-sm">View All</a>
+            </div>
+            <% if (announcements.length > 0) { %>
+                <% announcements.forEach(a => { %>
+                <div class="announcement-item">
+                    <h4><%= a.title %></h4>
+                    <p><%= a.content %></p>
+                    <p class="date">📅 <%= new Date(a.posted_at).toDateString() %></p>
+                </div>
+                <% }) %>
+            <% } else { %>
+            <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <p>No announcements yet.</p>
+            </div>
+            <% } %>
+        </div>
+
+    </main>
+</div>
+
+<footer class="footer">
+    <p>© <%= new Date().getFullYear() %> Department of Information Technology, SICT, FUT Minna</p>
+</footer>
+
+</body>
+</html>

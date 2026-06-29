@@ -1,0 +1,33 @@
+<nav class="navbar">
+    <div class="navbar-brand">
+        🎓 <span>FUT Minna</span> — IT Dept. Booking System
+    </div>
+    <ul class="navbar-nav">
+        <% if (typeof user !== 'undefined' && user) { %>
+            <li><a href="/<%= user.role %>/dashboard">Dashboard</a></li>
+
+            <!-- Notification Bell -->
+            <li style="position:relative;">
+                <a href="/<%= user.role %>/notifications" 
+                   style="position:relative; padding: 8px 12px;">
+                    🔔
+                    <% if (typeof unreadCount !== 'undefined' && unreadCount > 0) { %>
+                    <span style="
+                        position:absolute; top:2px; right:2px;
+                        background:#e74c3c; color:white;
+                        border-radius:50%; width:18px; height:18px;
+                        font-size:0.7rem; font-weight:bold;
+                        display:flex; align-items:center; justify-content:center;">
+                        <%= unreadCount %>
+                    </span>
+                    <% } %>
+                </a>
+            </li>
+
+            <li><a href="/logout" class="btn-logout">Logout</a></li>
+        <% } else { %>
+            <li><a href="/login">Login</a></li>
+            <li><a href="/register">Register</a></li>
+        <% } %>
+    </ul>
+</nav>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FUT Minna - IT Department Booking System</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<%- include('partials/navbar') %>
+
+<!-- Hero Section -->
+<section class="hero">
+    <h1>🎓 FUT Minna IT Department</h1>
+    <h1>Information & Booking System</h1>
+    <p>A centralized digital platform for accessing departmental information and booking academic resources in the Department of Information Technology, SICT, Federal University of Technology Minna.</p>
+    <div class="hero-buttons">
+        <a href="/register" class="btn-hero-primary">Get Started →</a>
+        <a href="/login" class="btn-hero-secondary">Login</a>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <h2>What You Can Do</h2>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">🏛️</div>
+            <h3>Book Lecture Halls</h3>
+            <p>Reserve lecture halls and classrooms for academic activities with real-time availability checking.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">💻</div>
+            <h3>Book Computer Labs</h3>
+            <p>Schedule computer laboratory sessions easily without visiting the departmental office.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🔧</div>
+            <h3>Book Equipment</h3>
+            <p>Reserve departmental equipment such as projectors and technical tools online.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📅</div>
+            <h3>Schedule Appointments</h3>
+            <p>Request and manage lecturer appointments digitally without physical office visits.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📢</div>
+            <h3>View Announcements</h3>
+            <p>Stay updated with the latest departmental announcements and notices in real time.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h3>Track Your Bookings</h3>
+            <p>Monitor the status of all your booking and appointment requests from your dashboard.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Announcements Section -->
+<section class="announcements-section">
+    <h2>📢 Latest Announcements</h2>
+    <% if (announcements.length > 0) { %>
+        <% announcements.forEach(announcement => { %>
+            <div class="announcement-item">
+                <h4><%= announcement.title %></h4>
+                <p><%= announcement.content %></p>
+                <p class="date">📅 <%= new Date(announcement.posted_at).toDateString() %></p>
+            </div>
+        <% }) %>
+    <% } else { %>
+        <div class="empty-state">
+            <div class="empty-icon">📭</div>
+            <p>No announcements yet. Check back later.</p>
+        </div>
+    <% } %>
+</section>
+
+<footer class="footer">
+    <p>© <%= new Date().getFullYear() %> Department of Information Technology, SICT, Federal University of Technology Minna. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

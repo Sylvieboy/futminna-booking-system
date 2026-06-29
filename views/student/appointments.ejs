@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointments - FUT Minna</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<%- include('../partials/navbar') %>
+
+<div class="layout">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h6>Logged in as</h6>
+            <p>👤 <%= user.full_name %></p>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="/student/dashboard"><span class="icon">🏠</span> Dashboard</a></li>
+            <li><a href="/student/resources"><span class="icon">🏛️</span> Browse Resources</a></li>
+            <li><a href="/student/bookings"><span class="icon">📋</span> My Bookings</a></li>
+            <li><a href="/student/appointments" class="active"><span class="icon">📅</span> Appointments</a></li>
+            <li><a href="/student/announcements"><span class="icon">📢</span> Announcements</a></li>
+            <li><a href="/logout"><span class="icon">🚪</span> Logout</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1>📅 Lecturer Appointments</h1>
+            <p>Request and manage your lecturer appointments</p>
+        </div>
+
+        <%- include('../partials/messages') %>
+
+        <!-- Appointment Form -->
+        <div class="card">
+            <div class="card-header">
+                <h2>➕ New Appointment Request</h2>
+            </div>
+            <form action="/student/appointments" method="POST">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Select Lecturer *</label>
+                        <select name="lecturer_id" class="form-control" required>
+                            <option value="">-- Select a lecturer --</option>
+                            <% lecturers.forEach(lecturer => { %>
+                            <option value="<%= lecturer.id %>">
+                                <%= lecturer.full_name %>
+                            </option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Appointment Date *</label>
+                        <input type="date" name="appointment_date" class="form-control"
+                               min="<%= new Date().toISOString().split('T')[0] %>" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Appointment Time *</label>
+                        <input type="time" name="appointment_time" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Purpose of Appointment *</label>
+                        <input type="text" name="purpose" class="form-control"
+                               placeholder="e.g. Project supervision, Course clarification" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    📅 Submit Appointment Request
+                </button>
+            </form>
+        </div>
+
+        <!-- Appointments Table -->
+        <div class="card">
+            <div class="card-header">
+                <h2>📅 My Appointment History</h2>
+            </div>
+            <% if (appointments.length > 0) { %>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Lecturer</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Purpose</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% appointments.forEach(apt => { %>
+                        <tr>
+                            <td><%= apt.users.full_name %></td>
+                            <td><%= new Date(apt.appointment_date).toDateString() %></td>
+                            <td><%= apt.appointment_time %></td>
+                            <td><%= apt.purpose %></td>
+                            <td><span class="badge badge-<%= apt.status %>"><%= apt.status %></span></td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+            <% } else { %>
+            <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <p>You have no appointment requests yet.</p>
+            </div>
+            <% } %>
+        </div>
+
+    </main>
+</div>
+
+<footer class="footer">
+    <p>© <%= new Date().getFullYear() %> Department of Information Technology, SICT, FUT Minna</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users - FUT Minna</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<%- include('../partials/navbar') %>
+
+<div class="layout">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h6>Logged in as</h6>
+            <p>👤 <%= user.full_name %></p>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="/admin/dashboard"><span class="icon">🏠</span> Dashboard</a></li>
+            <li><a href="/admin/users" class="active"><span class="icon">👥</span> Manage Users</a></li>
+            <li><a href="/admin/resources"><span class="icon">🏛️</span> Manage Resources</a></li>
+            <li><a href="/admin/bookings"><span class="icon">📋</span> Manage Bookings</a></li>
+            <li><a href="/admin/appointments"><span class="icon">📅</span> All Appointments</a></li>
+            <li><a href="/admin/announcements"><span class="icon">📢</span> Announcements</a></li>
+            <li><a href="/logout"><span class="icon">🚪</span> Logout</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1>👥 Manage Users</h1>
+            <p>View, create and manage all registered system users</p>
+        </div>
+
+        <%- include('../partials/messages') %>
+
+        <!-- CREATE USER FORM -->
+        <div class="card" style="margin-bottom: 30px;">
+            <div class="card-header" style="cursor:pointer;" onclick="toggleForm()">
+                <h2>➕ Create Account for Student / Lecturer</h2>
+                <small style="color:#666;">Click to expand / collapse</small>
+            </div>
+            <div id="createUserForm" style="display:none; padding: 20px;">
+                <form action="/admin/users/create" method="POST">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>First Name *</label>
+                            <input type="text" name="first_name" class="form-control" placeholder="First name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name *</label>
+                            <input type="text" name="last_name" class="form-control" placeholder="Last name" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Gender</label>
+                            <select name="gender" class="form-control">
+                                <option value="">-- Select gender --</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Role *</label>
+                            <select name="role" class="form-control" required id="adminRoleSelect" onchange="handleAdminRoleChange()">
+                                <option value="">-- Select role --</option>
+                                <option value="student">Student</option>
+                                <option value="staff">Staff / Lecturer</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Email *</label>
+                            <input type="email" name="email" class="form-control" placeholder="Email address" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input type="tel" name="phone" class="form-control" placeholder="Phone number">
+                        </div>
+                    </div>
+
+                    <!-- Matric Number - for students -->
+                    <div class="form-group" id="adminMatricField" style="display:none;">
+                        <label>Matric Number *</label>
+                        <input type="text" name="matric_number" id="adminMatricInput" class="form-control" placeholder="e.g. FUT/SET/IT/21/0001">
+                    </div>
+
+                    <!-- Staff ID - for staff -->
+                    <div class="form-group" id="adminStaffIdField" style="display:none;">
+                        <label>Staff ID *</label>
+                        <input type="text" name="staff_id" id="adminStaffIdInput" class="form-control" placeholder="Enter staff ID">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Department *</label>
+                            <select name="department" class="form-control" required>
+                                <option value="">-- Select department --</option>
+                                <option value="Information Technology">Information Technology</option>
+                                <option value="Computer Science">Computer Science</option>
+                                <option value="Cyber Security">Cyber Security</option>
+                                <option value="Software Engineering">Software Engineering</option>
+                                <option value="Electrical Engineering">Electrical Engineering</option>
+                                <option value="Mechanical Engineering">Mechanical Engineering</option>
+                                <option value="Civil Engineering">Civil Engineering</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Faculty *</label>
+                            <select name="faculty" class="form-control" required>
+                                <option value="">-- Select faculty --</option>
+                                <option value="School of Information and Communication Technology">SICT</option>
+                                <option value="School of Engineering and Engineering Technology">SEET</option>
+                                <option value="School of Science and Science Education">SSSE</option>
+                                <option value="School of Agriculture and Agricultural Technology">SAAT</option>
+                                <option value="School of Environmental Technology">SET</option>
+                                <option value="School of Management Technology">SMAT</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Password *</label>
+                        <input type="password" name="password" class="form-control" placeholder="Min. 6 characters" required>
+                        <small style="color:#666; font-size:0.8rem;">Share this password with the user after creating their account.</small>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        ➕ Create Account
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- USERS TABLE -->
+        <div class="card">
+            <div class="card-header">
+                <h2>👥 All Registered Users</h2>
+            </div>
+            <% if (users.length > 0) { %>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Department</th>
+                            <th>Role</th>
+                            <th>Registered</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% users.forEach(u => { %>
+                        <tr>
+                            <td><%= u.full_name %></td>
+                            <td><%= u.email %></td>
+                            <td><%= u.phone || '—' %></td>
+                            <td><%= u.department || '—' %></td>
+                            <td><span class="badge badge-<%= u.role %>"><%= u.role %></span></td>
+                            <td><%= new Date(u.created_at).toDateString() %></td>
+                            <td>
+                                <% if (u.id !== user.id) { %>
+                                <a href="/admin/users/delete/<%= u.id %>"
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Delete this user?')">
+                                   🗑️ Delete
+                                </a>
+                                <% } else { %>
+                                <span style="color:#999; font-size:0.8rem;">You</span>
+                                <% } %>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+            <% } else { %>
+            <div class="empty-state">
+                <div class="empty-icon">👥</div>
+                <p>No users registered yet.</p>
+            </div>
+            <% } %>
+        </div>
+
+    </main>
+</div>
+
+<footer class="footer">
+    <p>© <%= new Date().getFullYear() %> Department of Information Technology, SICT, FUT Minna</p>
+</footer>
+
+<script>
+    function toggleForm() {
+        const form = document.getElementById('createUserForm');
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function handleAdminRoleChange() {
+        const role = document.getElementById('adminRoleSelect').value;
+        const matricField = document.getElementById('adminMatricField');
+        const matricInput = document.getElementById('adminMatricInput');
+        const staffIdField = document.getElementById('adminStaffIdField');
+        const staffIdInput = document.getElementById('adminStaffIdInput');
+
+        matricField.style.display = 'none';
+        matricInput.required = false;
+        staffIdField.style.display = 'none';
+        staffIdInput.required = false;
+
+        if (role === 'student') {
+            matricField.style.display = 'block';
+            matricInput.required = true;
+        } else if (role === 'staff') {
+            staffIdField.style.display = 'block';
+            staffIdInput.required = true;
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - FUT Minna</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<%- include('../partials/navbar') %>
+
+<div class="layout">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h6>Logged in as</h6>
+            <p>👤 <%= user.full_name %></p>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="/<%= user.role %>/dashboard"><span class="icon">🏠</span> Dashboard</a></li>
+            <li><a href="/<%= user.role %>/notifications" class="active"><span class="icon">🔔</span> Notifications</a></li>
+            <li><a href="/logout"><span class="icon">🚪</span> Logout</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1>🔔 Notifications</h1>
+            <p>All your system notifications</p>
+        </div>
+
+        <%- include('../partials/messages') %>
+
+        <div class="card">
+            <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+                <h2>All Notifications</h2>
+                <% if (notifications.length > 0) { %>
+                <a href="/<%= user.role %>/notifications/read-all" class="btn btn-warning btn-sm">
+                    ✅ Mark All as Read
+                </a>
+                <% } %>
+            </div>
+
+            <% if (notifications.length > 0) { %>
+            <div style="padding: 10px 0;">
+                <% notifications.forEach(n => { %>
+               <div style="padding: 10px 0;">
+    <% notifications.forEach(n => { %>
+    <div class="notification-item <%= n.is_read ? 'read' : 'unread' %>">
+        <div>
+            <p class="notification-msg">
+                <%= n.is_read ? '🔕' : '🔔' %> <%= n.message %>
+            </p>
+            <small style="color:#999;">
+                <%= new Date(n.created_at).toDateString() %> —
+                <%= new Date(n.created_at).toLocaleTimeString() %>
+            </small>
+        </div>
+        <% if (!n.is_read) { %>
+        <a href="/<%= user.role %>/notifications/read/<%= n.id %>"
+           class="btn btn-sm"
+           style="background:#2d6a9f; color:white; padding:4px 10px; font-size:0.8rem; border-radius:4px; margin-left:15px; white-space:nowrap;">
+            Mark Read
+        </a>
+        <% } %>
+    </div>
+    <% }) %>
+</div>
+                
+                    <% if (!n.is_read) { %>
+                    <a href="/<%= user.role %>/notifications/read/<%= n.id %>"
+                       class="btn btn-sm"
+                       style="background:#2d6a9f; color:white; padding:4px 10px; font-size:0.8rem; border-radius:4px; margin-left:15px; white-space:nowrap;">
+                        Mark Read
+                    </a>
+                    <% } %>
+                </div>
+                <% }) %>
+            </div>
+            <% } else { %>
+            <div class="empty-state">
+                <div class="empty-icon">🔕</div>
+                <p>No notifications yet.</p>
+            </div>
+            <% } %>
+        </div>
+
+    </main>
+</div>
+
+<footer class="footer">
+    <p>© <%= new Date().getFullYear() %> Department of Information Technology, SICT, FUT Minna</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - FUT Minna</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<%- include('../partials/navbar') %>
+
+<div class="layout">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h6>Logged in as</h6>
+            <p>👤 <%= user.full_name %></p>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="/admin/dashboard" class="active">
+                <span class="icon">🏠</span> Dashboard
+            </a></li>
+            <li><a href="/admin/users">
+                <span class="icon">👥</span> Manage Users
+            </a></li>
+            <li><a href="/admin/resources">
+                <span class="icon">🏛️</span> Manage Resources
+            </a></li>
+            <li><a href="/admin/bookings">
+                <span class="icon">📋</span> Manage Bookings
+            </a></li>
+            <li><a href="/admin/appointments">
+                <span class="icon">📅</span> All Appointments
+            </a></li>
+            <li><a href="/admin/announcements">
+                <span class="icon">📢</span> Announcements
+            </a></li>
+            <li><a href="/logout">
+                <span class="icon">🚪</span> Logout
+            </a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1>Admin Dashboard 🛠️</h1>
+            <p>Overview of all system activities</p>
+        </div>
+
+        <%- include('../partials/messages') %>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card blue">
+                <div class="stat-icon">👥</div>
+                <div class="stat-info">
+                    <h3><%= totalUsers %></h3>
+                    <p>Total Users</p>
+                </div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-icon">🏛️</div>
+                <div class="stat-info">
+                    <h3><%= totalResources %></h3>
+                    <p>Total Resources</p>
+                </div>
+            </div>
+            <div class="stat-card orange">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-info">
+                    <h3><%= pendingBookings %></h3>
+                    <p>Pending Bookings</p>
+                </div>
+            </div>
+            <div class="stat-card red">
+                <div class="stat-icon">📢</div>
+                <div class="stat-info">
+                    <h3><%= totalAnnouncements %></h3>
+                    <p>Announcements</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Pending Bookings -->
+        <div class="card">
+            <div class="card-header">
+                <h2>⏳ Recent Pending Bookings</h2>
+                <a href="/admin/bookings" class="btn btn-primary btn-sm">View All</a>
+            </div>
+            <% if (recentBookings.length > 0) { %>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Resource</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% recentBookings.forEach(booking => { %>
+                        <tr>
+                            <td><%= booking.users.full_name %></td>
+                            <td><%= booking.resources.resource_name %></td>
+                            <td><%= new Date(booking.booking_date).toDateString() %></td>
+                            <td><%= booking.start_time %> - <%= booking.end_time %></td>
+                            <td><span class="badge badge-<%= booking.status %>"><%= booking.status %></span></td>
+                            <td>
+                                <a href="/admin/bookings/<%= booking.id %>/approve"
+                                   class="btn btn-success btn-sm">✅ Approve</a>
+                                <a href="/admin/bookings/<%= booking.id %>/reject"
+                                   class="btn btn-danger btn-sm">❌ Reject</a>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+            <% } else { %>
+            <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <p>No pending bookings at the moment.</p>
+            </div>
+            <% } %>
+        </div>
+
+    </main>
+</div>
+
+<footer class="footer">
+    <p>© <%= new Date().getFullYear() %> Department of Information Technology, SICT, FUT Minna</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - FUT Minna Booking System</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div class="auth-container">
+    <div class="auth-box">
+        <div class="auth-logo">
+            <div style="font-size: 3rem;">🎓</div>
+            <h1>FUT Minna</h1>
+            <p>IT Department Booking System</p>
+        </div>
+
+        <h2>Create Account</h2>
+
+        <%- include('../partials/messages') %>
+
+        <form action="/register" method="POST">
+
+            <!-- Name Row -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label>First Name *</label>
+                    <input type="text" name="first_name" class="form-control"
+                           placeholder="Enter your first name" required>
+                </div>
+                <div class="form-group">
+                    <label>Last Name *</label>
+                    <input type="text" name="last_name" class="form-control"
+                           placeholder="Enter your last name" required>
+                </div>
+            </div>
+
+            <!-- Gender -->
+            <div class="form-group">
+                <label>Gender *</label>
+                <select name="gender" class="form-control" required>
+                    <option value="">-- Select gender --</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <label>Email Address *</label>
+                <input type="email" name="email" class="form-control"
+                       placeholder="Enter your email" required>
+            </div>
+
+            <!-- Phone -->
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" name="phone" class="form-control"
+                       placeholder="Enter your phone number">
+            </div>
+
+            <!-- Role -->
+            <div class="form-group">
+                <label>Role *</label>
+                <select name="role" class="form-control" required id="roleSelect" onchange="handleRoleChange()">
+                    <option value="">-- Select your role --</option>
+                    <option value="student">Student</option>
+                    <option value="staff">Staff / Lecturer</option>
+                </select>
+            </div>
+
+            <!-- Admin secret code - hidden by default -->
+            <div class="form-group" id="adminCodeField" style="display:none;">
+                <label>Admin Secret Code *</label>
+                <input type="password" name="admin_code" id="admin_code" class="form-control"
+                       placeholder="Enter the administrator secret code">
+                <small style="color:#e74c3c; font-size:0.8rem;">
+                    ⚠️ Only authorized department officials can register as Administrator.
+                </small>
+            </div>
+
+            <!-- Matric Number - shown for students -->
+            <div class="form-group" id="matricField" style="display:none;">
+                <label>Matric Number *</label>
+                <input type="text" name="matric_number" id="matric_number" class="form-control"
+                       placeholder="e.g. FUT/SET/IT/21/0001">
+            </div>
+
+            <!-- Staff ID - shown for staff -->
+            <div class="form-group" id="staffIdField" style="display:none;">
+                <label>Staff ID *</label>
+                <input type="text" name="staff_id" id="staff_id" class="form-control"
+                       placeholder="Enter your staff ID">
+            </div>
+
+            <!-- Department -->
+            <div class="form-group">
+                <label>Department *</label>
+                <select name="department" class="form-control" required>
+                    <option value="">-- Select department --</option>
+                    <option value="Information Technology">Information Technology</option>
+                    <option value="Computer Science">Computer Science</option>
+                    <option value="Cyber Security">Cyber Security</option>
+                    <option value="Software Engineering">Software Engineering</option>
+                    <option value="Electrical Engineering">Electrical Engineering</option>
+                    <option value="Mechanical Engineering">Mechanical Engineering</option>
+                    <option value="Civil Engineering">Civil Engineering</option>
+                    <option value="Chemical Engineering">Chemical Engineering</option>
+                    <option value="Agricultural Engineering">Agricultural Engineering</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <!-- Faculty -->
+            <div class="form-group">
+                <label>Faculty *</label>
+                <select name="faculty" class="form-control" required>
+                    <option value="">-- Select faculty --</option>
+                    <option value="School of Information and Communication Technology">School of Information and Communication Technology (SICT)</option>
+                    <option value="School of Engineering and Engineering Technology">School of Engineering and Engineering Technology (SEET)</option>
+                    <option value="School of Science and Science Education">School of Science and Science Education (SSSE)</option>
+                    <option value="School of Agriculture and Agricultural Technology">School of Agriculture and Agricultural Technology (SAAT)</option>
+                    <option value="School of Environmental Technology">School of Environmental Technology (SET)</option>
+                    <option value="School of Management Technology">School of Management Technology (SMAT)</option>
+                </select>
+            </div>
+
+            <!-- Password -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Password *</label>
+                    <input type="password" name="password" class="form-control"
+                           placeholder="Min. 6 characters" required>
+                </div>
+                <div class="form-group">
+                    <label>Confirm Password *</label>
+                    <input type="password" name="confirm_password" class="form-control"
+                           placeholder="Repeat password" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding: 12px;">
+                Create Account
+            </button>
+        </form>
+
+        <p style="text-align:center; margin-top:20px; font-size:0.9rem; color:#666;">
+            Already have an account? <a href="/login" style="color:#2d6a9f; font-weight:600;">Login here</a>
+        </p>
+    </div>
+</div>
+
+<script>
+    function handleRoleChange() {
+        const role = document.getElementById('roleSelect').value;
+
+        // Admin code field
+        const adminField = document.getElementById('adminCodeField');
+        const adminInput = document.getElementById('admin_code');
+
+        // Matric and staff fields
+        const matricField = document.getElementById('matricField');
+        const matricInput = document.getElementById('matric_number');
+        const staffIdField = document.getElementById('staffIdField');
+        const staffIdInput = document.getElementById('staff_id');
+
+        // Reset all
+        adminField.style.display = 'none';
+        adminInput.required = false;
+        adminInput.value = '';
+        matricField.style.display = 'none';
+        matricInput.required = false;
+        matricInput.value = '';
+        staffIdField.style.display = 'none';
+        staffIdInput.required = false;
+        staffIdInput.value = '';
+
+        if (role === 'admin') {
+            adminField.style.display = 'block';
+            adminInput.required = true;
+        } else if (role === 'student') {
+            matricField.style.display = 'block';
+            matricInput.required = true;
+        } else if (role === 'staff') {
+            staffIdField.style.display = 'block';
+            staffIdInput.required = true;
+        }
+    }
+</script>
+
+</body>
+</html>

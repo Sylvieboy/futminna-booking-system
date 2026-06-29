@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - FUT Minna</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<%- include('../partials/navbar') %>
+
+<div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h6>Logged in as</h6>
+            <p>👤 <%= user.full_name %></p>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="/student/dashboard" class="active">
+                <span class="icon">🏠</span> Dashboard
+            </a></li>
+            <li><a href="/student/resources">
+                <span class="icon">🏛️</span> Browse Resources
+            </a></li>
+            <li><a href="/student/bookings">
+                <span class="icon">📋</span> My Bookings
+            </a></li>
+            <li><a href="/student/appointments">
+                <span class="icon">📅</span> Appointments
+            </a></li>
+            <li><a href="/student/announcements">
+                <span class="icon">📢</span> Announcements
+            </a></li>
+            <li><a href="/logout">
+                <span class="icon">🚪</span> Logout
+            </a></li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1>Welcome back, <%= user.full_name %>! 👋</h1>
+            <p>Here is a summary of your recent activities</p>
+        </div>
+
+        <%- include('../partials/messages') %>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card blue">
+                <div class="stat-icon">📋</div>
+                <div class="stat-info">
+                    <h3><%= bookings.length %></h3>
+                    <p>Recent Bookings</p>
+                </div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-icon">📅</div>
+                <div class="stat-info">
+                    <h3><%= appointments.length %></h3>
+                    <p>Appointments</p>
+                </div>
+            </div>
+            <div class="stat-card orange">
+                <div class="stat-icon">📢</div>
+                <div class="stat-info">
+                    <h3><%= announcements.length %></h3>
+                    <p>Announcements</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Bookings -->
+        <div class="card">
+            <div class="card-header">
+                <h2>📋 Recent Bookings</h2>
+                <a href="/student/bookings" class="btn btn-primary btn-sm">View All</a>
+            </div>
+            <% if (bookings.length > 0) { %>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Resource</th>
+                            <th>Type</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% bookings.forEach(booking => { %>
+                        <tr>
+                            <td><%= booking.resources.resource_name %></td>
+                            <td><span class="badge badge-<%= booking.resources.resource_type %>"><%= booking.resources.resource_type %></span></td>
+                            <td><%= new Date(booking.booking_date).toDateString() %></td>
+                            <td><%= booking.start_time %> - <%= booking.end_time %></td>
+                            <td><span class="badge badge-<%= booking.status %>"><%= booking.status %></span></td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+            <% } else { %>
+            <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <p>No bookings yet. <a href="/student/bookings" style="color:#2d6a9f;">Make a booking</a></p>
+            </div>
+            <% } %>
+        </div>
+
+        <!-- Recent Appointments -->
+        <div class="card">
+            <div class="card-header">
+                <h2>📅 Recent Appointments</h2>
+                <a href="/student/appointments" class="btn btn-primary btn-sm">View All</a>
+            </div>
+            <% if (appointments.length > 0) { %>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Lecturer</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Purpose</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% appointments.forEach(apt => { %>
+                        <tr>
+                            <td><%= apt.users.full_name %></td>
+                            <td><%= new Date(apt.appointment_date).toDateString() %></td>
+                            <td><%= apt.appointment_time %></td>
+                            <td><%= apt.purpose %></td>
+                            <td><span class="badge badge-<%= apt.status %>"><%= apt.status %></span></td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+            <% } else { %>
+            <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <p>No appointments yet. <a href="/student/appointments" style="color:#2d6a9f;">Request one</a></p>
+            </div>
+            <% } %>
+        </div>
+
+        <!-- Announcements -->
+        <div class="card">
+            <div class="card-header">
+                <h2>📢 Latest Announcements</h2>
+                <a href="/student/announcements" class="btn btn-primary btn-sm">View All</a>
+            </div>
+            <% if (announcements.length > 0) { %>
+                <% announcements.forEach(a => { %>
+                <div class="announcement-item">
+                    <h4><%= a.title %></h4>
+                    <p><%= a.content %></p>
+                    <p class="date">📅 <%= new Date(a.posted_at).toDateString() %></p>
+                </div>
+                <% }) %>
+            <% } else { %>
+            <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <p>No announcements yet.</p>
+            </div>
+            <% } %>
+        </div>
+
+    </main>
+</div>
+
+<footer class="footer">
+    <p>© <%= new Date().getFullYear() %> Department of Information Technology, SICT, FUT Minna</p>
+</footer>
+
+</body>
+</html>

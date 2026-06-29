@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - FUT Minna</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<%- include('../partials/navbar') %>
+
+<div class="layout">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h6>Logged in as</h6>
+            <p>👤 <%= user.full_name %></p>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="/student/dashboard"><span class="icon">🏠</span> Dashboard</a></li>
+            <li><a href="/student/resources"><span class="icon">🏛️</span> Browse Resources</a></li>
+            <li><a href="/student/bookings" class="active"><span class="icon">📋</span> My Bookings</a></li>
+            <li><a href="/student/appointments"><span class="icon">📅</span> Appointments</a></li>
+            <li><a href="/student/announcements"><span class="icon">📢</span> Announcements</a></li>
+            <li><a href="/logout"><span class="icon">🚪</span> Logout</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1>📋 My Bookings</h1>
+            <p>Manage your resource booking requests</p>
+        </div>
+
+        <%- include('../partials/messages') %>
+
+        <!-- Booking Form -->
+        <div class="card">
+            <div class="card-header">
+                <h2>➕ New Booking Request</h2>
+            </div>
+            <form action="/student/bookings" method="POST">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Select Resource *</label>
+                        <select name="resource_id" class="form-control" required>
+                            <option value="">-- Select a resource --</option>
+                            <% resources.forEach(resource => { %>
+                            <option value="<%= resource.id %>">
+                                <%= resource.resource_name %> (<%= resource.resource_type %>)
+                            </option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Booking Date *</label>
+                        <input type="date" name="booking_date" class="form-control"
+                               min="<%= new Date().toISOString().split('T')[0] %>" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Start Time *</label>
+                        <input type="time" name="start_time" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>End Time *</label>
+                        <input type="time" name="end_time" class="form-control" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    📋 Submit Booking Request
+                </button>
+            </form>
+        </div>
+
+        <!-- Bookings Table -->
+        <div class="card">
+            <div class="card-header">
+                <h2>📋 My Booking History</h2>
+            </div>
+            <% if (bookings.length > 0) { %>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Resource</th>
+                            <th>Type</th>
+                            <th>Date</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% bookings.forEach(booking => { %>
+                        <tr>
+                            <td><%= booking.resources.resource_name %></td>
+                            <td><span class="badge badge-<%= booking.resources.resource_type %>"><%= booking.resources.resource_type %></span></td>
+                            <td><%= new Date(booking.booking_date).toDateString() %></td>
+                            <td><%= booking.start_time %></td>
+                            <td><%= booking.end_time %></td>
+                            <td><span class="badge badge-<%= booking.status %>"><%= booking.status %></span></td>
+                            <td>
+                                <% if (booking.status === 'pending') { %>
+                                <a href="/student/bookings/cancel/<%= booking.id %>"
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Cancel this booking?')">
+                                   Cancel
+                                </a>
+                                <% } else { %>
+                                <span style="color:#999; font-size:0.8rem;">—</span>
+                                <% } %>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+            <% } else { %>
+            <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <p>You have not made any bookings yet.</p>
+            </div>
+            <% } %>
+        </div>
+
+    </main>
+</div>
+
+<footer class="footer">
+    <p>© <%= new Date().getFullYear() %> Department of Information Technology, SICT, FUT Minna</p>
+</footer>
+
+</body>
+</html>

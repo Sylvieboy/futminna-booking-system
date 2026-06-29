@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Announcements - FUT Minna</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<%- include('../partials/navbar') %>
+
+<div class="layout">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h6>Logged in as</h6>
+            <p>👤 <%= user.full_name %></p>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="/admin/dashboard"><span class="icon">🏠</span> Dashboard</a></li>
+            <li><a href="/admin/users"><span class="icon">👥</span> Manage Users</a></li>
+            <li><a href="/admin/resources"><span class="icon">🏛️</span> Manage Resources</a></li>
+            <li><a href="/admin/bookings"><span class="icon">📋</span> Manage Bookings</a></li>
+            <li><a href="/admin/appointments"><span class="icon">📅</span> All Appointments</a></li>
+            <li><a href="/admin/announcements" class="active"><span class="icon">📢</span> Announcements</a></li>
+            <li><a href="/logout"><span class="icon">🚪</span> Logout</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1>📢 Manage Announcements</h1>
+            <p>Post and manage departmental announcements</p>
+        </div>
+
+        <%- include('../partials/messages') %>
+
+        <!-- Post Announcement Form -->
+        <div class="card">
+            <div class="card-header">
+                <h2>➕ Post New Announcement</h2>
+            </div>
+            <form action="/admin/announcements" method="POST">
+                <div class="form-group">
+                    <label>Announcement Title *</label>
+                    <input type="text" name="title" class="form-control"
+                           placeholder="Enter announcement title" required>
+                </div>
+                <div class="form-group">
+                    <label>Announcement Content *</label>
+                    <textarea name="content" class="form-control" rows="4"
+                              placeholder="Enter the full announcement content here..."
+                              required style="resize:vertical;"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    📢 Post Announcement
+                </button>
+            </form>
+        </div>
+
+        <!-- Announcements List -->
+        <div class="card">
+            <div class="card-header">
+                <h2>📢 All Announcements</h2>
+            </div>
+            <% if (announcements.length > 0) { %>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Content</th>
+                            <th>Posted</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% announcements.forEach(a => { %>
+                        <tr>
+                            <td><strong><%= a.title %></strong></td>
+                            <td><%= a.content.substring(0, 80) %>...</td>
+                            <td><%= new Date(a.posted_at).toDateString() %></td>
+                            <td>
+                                <a href="/admin/announcements/delete/<%= a.id %>"
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Delete this announcement?')">
+                                   🗑️ Delete
+                                </a>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+            <% } else { %>
+            <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <p>No announcements posted yet.</p>
+            </div>
+            <% } %>
+        </div>
+
+    </main>
+</div>
+
+<footer class="footer">
+    <p>© <%= new Date().getFullYear() %> Department of Information Technology, SICT, FUT Minna</p>
+</footer>
+
+</body>
+</html>
