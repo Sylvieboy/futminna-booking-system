@@ -1,13 +1,14 @@
 {
   "name": "futminna-booking-system",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Web-based information and booking system for FUT Minna IT Department",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "dev": "node app.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Sylvester Charles",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
